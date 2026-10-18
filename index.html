@@ -1,0 +1,1836 @@
+<!DOCTYPE html>
+<html lang="en" data-version="1">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#17616f">
+<title>Meeting Planner · the hour that works for everyone</title>
+<meta name="description" content="Add the cities, pick a day, and see when everyone is inside working hours. Daylight saving handled. No upload, no account, nothing leaves the browser.">
+<meta name="author" content="Kristian Mario Miskovic (TekiDeki)">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://tekideki.github.io/Meeting-Planner/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Meeting Planner">
+<meta property="og:title" content="Meeting Planner · the hour that works for everyone">
+<meta property="og:description" content="See at a glance when every city is inside working hours. Daylight saving handled, nothing uploaded.">
+<meta property="og:url" content="https://tekideki.github.io/Meeting-Planner/">
+<meta property="og:image" content="https://tekideki.github.io/Meeting-Planner/screenshots/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_GB">
+<meta property="og:locale:alternate" content="ro_RO">
+<meta property="og:locale:alternate" content="sr_RS">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Meeting Planner · the hour that works for everyone">
+<meta name="twitter:description" content="Add the cities and see when everybody is free. No upload, no account.">
+<meta name="twitter:image" content="https://tekideki.github.io/Meeting-Planner/screenshots/og.png">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+/* Meeting Planner · TekiDeki - styles
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2026 Kristian Mario Miskovic (TekiDeki)
+ * No external font, no icon font, no CDN. Everything below is local.
+ */
+
+:root {
+  --bg: #f1eee6;
+  --panel: #fffdf9;
+  --panel-2: #f8f5ee;
+  --line: #e3ded2;
+  --line-strong: #cec6b6;
+  --ink: #1b2530;
+  --ink-soft: #4d5b66;
+  --ink-muted: #5e6a74;
+  --accent: #17616f;
+  --accent-hover: #124f5b;
+  --accent-soft: #dceef0;
+  --on-accent: #ffffff;
+  --ok: #1f7a5c;
+  --ok-soft: #e1f2ea;
+  --warn: #a8641a;
+  --warn-soft: #f8ecd9;
+  --bad: #b3261e;
+  --bad-soft: #fbe4e1;
+
+  --cell-work-bg: #d7ecdf;
+  --cell-work-ink: #17553a;
+  --cell-awake-bg: #fbeed2;
+  --cell-awake-ink: #7a4a10;
+  --cell-night-bg: #eceef0;
+  --cell-night-ink: #7c8892;
+
+  --shadow: 0 1px 2px rgba(27, 37, 48, 0.05), 0 12px 30px rgba(27, 37, 48, 0.07);
+  --radius: 18px;
+  --radius-sm: 11px;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  color-scheme: light;
+}
+
+.theme-dark {
+  --bg: #0f1518;
+  --panel: #161f23;
+  --panel-2: #121a1e;
+  --line: #243138;
+  --line-strong: #36454d;
+  --ink: #e9eff2;
+  --ink-soft: #b3c0c7;
+  --ink-muted: #81919a;
+  --accent: #6cc7d4;
+  --accent-hover: #8ad6e0;
+  --accent-soft: #14343a;
+  --on-accent: #08262b;
+  --ok: #5ecfa9;
+  --ok-soft: #102e28;
+  --warn: #e0a34a;
+  --warn-soft: #33270f;
+  --bad: #f2978f;
+  --bad-soft: #361a18;
+
+  --cell-work-bg: #123a2c;
+  --cell-work-ink: #8ee3b8;
+  --cell-awake-bg: #38290f;
+  --cell-awake-ink: #f0c07a;
+  --cell-night-bg: #1a2227;
+  --cell-night-ink: #6b7a84;
+
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 16px 34px rgba(0, 0, 0, 0.28);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { font-family: var(--serif); font-weight: 600; letter-spacing: -0.01em; margin: 0; }
+p { margin: 0; }
+a { color: var(--accent); }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+.skip-link {
+  position: absolute; left: -9999px; top: 0; z-index: 100;
+  background: var(--accent); color: var(--on-accent);
+  padding: 10px 16px; border-radius: 0 0 10px 0; text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ------------------------------------------------------------------ topbar */
+
+.topbar {
+  position: sticky; top: 0; z-index: 30;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: saturate(160%) blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.topbar-inner {
+  max-width: 1080px; margin: 0 auto; padding: 10px 20px;
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+}
+.brand { display: flex; align-items: center; gap: 11px; text-decoration: none; color: inherit; min-width: 0; }
+.brand-mark { width: 34px; height: 34px; color: var(--accent); flex: none; }
+.brand-mark svg { width: 100%; height: 100%; fill: none; }
+.brand-text { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
+.brand-text > span:first-child { font-family: var(--serif); font-size: 19px; font-weight: 600; }
+.brand-tagline { font-size: 12px; color: var(--ink-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.topbar-actions { display: flex; align-items: center; gap: 8px; flex: none; }
+
+.icon-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: transparent; border: 1px solid transparent; color: var(--ink-soft);
+  font: inherit; font-size: 13px; padding: 7px 10px; border-radius: 9px; cursor: pointer;
+}
+.icon-btn svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.icon-btn:hover:not(:disabled) { background: var(--panel); border-color: var(--line); color: var(--ink); }
+.icon-btn:disabled { opacity: 0.4; cursor: default; }
+.theme-sun { display: none; }
+.theme-dark .theme-sun { display: block; }
+.theme-dark .theme-moon { display: none; }
+
+select {
+  font: inherit; font-size: 14px; color: var(--ink);
+  background: var(--panel); border: 1px solid var(--line-strong);
+  border-radius: 9px; padding: 7px 9px; cursor: pointer;
+}
+
+/* -------------------------------------------------------------------- page */
+
+.wrap { max-width: 1080px; margin: 0 auto; padding: 30px 20px 60px; }
+
+.intro { max-width: 720px; }
+.intro h1 { font-size: clamp(28px, 4.2vw, 42px); line-height: 1.12; }
+.lede { margin-top: 14px; font-size: 17px; color: var(--ink-soft); max-width: 62ch; }
+
+.claims { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 18px 0 0; }
+.claims li {
+  font-size: 12.5px; color: var(--ink-soft);
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: 999px; padding: 5px 12px;
+}
+.claims li::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--ok); margin-right: 7px; vertical-align: 1px; }
+
+/* ------------------------------------------------------------------ panels */
+
+.panels {
+  display: grid; grid-template-columns: 1.15fr 1fr; gap: 16px; margin-top: 26px;
+}
+.panel {
+  background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 20px 20px 18px; box-shadow: var(--shadow);
+}
+.panel h2 { font-size: 21px; }
+.panel-sub { font-size: 13px; color: var(--ink-muted); margin-top: 4px; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--panel-2); border: 1px solid var(--line-strong);
+  border-radius: 999px; padding: 6px 7px 6px 13px; font-size: 14px;
+}
+.chip:first-child { border-color: var(--accent); background: var(--accent-soft); }
+.chip-zone { font-size: 11px; color: var(--ink-muted); font-family: var(--mono); }
+.chip-x {
+  border: 0; background: transparent; color: var(--ink-muted); cursor: pointer;
+  width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center;
+  font-size: 15px; line-height: 1; padding: 0;
+}
+.chip-x:hover { background: var(--bad-soft); color: var(--bad); }
+
+.empty { margin-top: 14px; font-size: 13px; color: var(--ink-muted); }
+
+.addrow { display: flex; gap: 8px; margin-top: 14px; }
+.addrow input {
+  flex: 1; min-width: 0; font: inherit; font-size: 14px; color: var(--ink);
+  background: var(--panel-2); border: 1px solid var(--line-strong);
+  border-radius: 10px; padding: 10px 12px;
+}
+.addrow input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+
+.btn {
+  font: inherit; font-size: 14px; cursor: pointer;
+  border-radius: 10px; padding: 10px 16px; border: 1px solid var(--line-strong);
+  background: var(--panel); color: var(--ink);
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: var(--on-accent); }
+.btn-quiet { background: transparent; }
+.btn-sm { padding: 7px 13px; font-size: 13px; }
+
+.msg { font-size: 12.5px; min-height: 18px; margin-top: 9px; color: var(--warn); }
+.msg.good { color: var(--ok); }
+
+.dayrow { display: flex; align-items: center; gap: 8px; margin-top: 16px; }
+.daylabel { flex: 1; display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.daylabel strong { font-size: 16px; font-weight: 600; }
+.badge {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+  background: var(--accent-soft); color: var(--accent);
+  border-radius: 999px; padding: 2px 8px; font-weight: 600;
+}
+.round-btn {
+  width: 34px; height: 34px; flex: none; border-radius: 50%;
+  border: 1px solid var(--line-strong); background: var(--panel-2); color: var(--ink-soft);
+  display: grid; place-items: center; cursor: pointer; padding: 0;
+}
+.round-btn svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.round-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.hours { display: flex; align-items: center; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+.hours-label { font-size: 13px; color: var(--ink-soft); margin-right: 2px; }
+.dash { color: var(--ink-muted); }
+.tiny { font-size: 12px; color: var(--ink-muted); margin-top: 10px; }
+
+/* ------------------------------------------------------------------ result */
+
+.result {
+  margin-top: 18px; padding: 20px 22px;
+  border-radius: var(--radius); border: 1px solid var(--line);
+  background: var(--panel); box-shadow: var(--shadow);
+}
+.result h2 { font-size: 24px; }
+.result p { margin-top: 3px; color: var(--ink-soft); font-size: 15px; }
+.result.is-all { background: var(--ok-soft); border-color: color-mix(in srgb, var(--ok) 35%, var(--line)); }
+.result.is-all h2 { color: var(--ok); }
+.result.is-partial { background: var(--warn-soft); border-color: color-mix(in srgb, var(--warn) 35%, var(--line)); }
+.result.is-partial h2 { color: var(--warn); }
+.result.is-none { background: var(--bad-soft); border-color: color-mix(in srgb, var(--bad) 32%, var(--line)); }
+.result.is-none h2 { color: var(--bad); }
+.result.is-all p, .result.is-partial p, .result.is-none p { color: var(--ink); }
+
+/* -------------------------------------------------------------------- grid */
+
+.gridcard {
+  margin-top: 18px; scroll-margin-top: 84px; background: var(--panel); border: 1px solid var(--line);
+  border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px 14px 12px;
+}
+.grid-scroll {
+  overflow: auto; max-height: min(66vh, 620px);
+  border-radius: var(--radius-sm); border: 1px solid var(--line);
+  overscroll-behavior: contain;
+}
+.grid {
+  border-collapse: separate; border-spacing: 0; width: 100%; table-layout: fixed;
+  font-variant-numeric: tabular-nums;
+  /* Columns never squeeze below a readable width: past that the table scrolls
+   * sideways inside its own box, which is better than 60px cells. */
+  min-width: calc(92px + var(--cols, 3) * 88px);
+}
+
+.grid th, .grid td { padding: 0; }
+
+.grid thead th {
+  position: sticky; top: 0; z-index: 3;
+  background: var(--panel-2); border-bottom: 1px solid var(--line-strong);
+  padding: 9px 10px; font-size: 12.5px; font-weight: 600; text-align: center;
+  color: var(--ink-soft); white-space: nowrap; vertical-align: bottom;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.grid thead th:first-child { width: 92px; text-align: left; }
+.grid thead th .zone { display: block; font-family: var(--mono); font-size: 10px; font-weight: 400; color: var(--ink-muted); margin-top: 2px; }
+.grid thead th:first-child { left: 0; z-index: 4; }
+
+.grid tbody th {
+  position: sticky; left: 0; z-index: 2;
+  background: var(--panel); border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 0; font-family: var(--mono); font-size: 12.5px; font-weight: 500;
+  color: var(--ink-soft); text-align: right; white-space: nowrap;
+}
+.hourbtn {
+  display: block; width: 100%; height: 34px; padding: 0 10px;
+  background: transparent; border: 0; cursor: pointer;
+  font: inherit; font-family: var(--mono); font-size: 12.5px; font-weight: 500;
+  color: inherit; text-align: right; white-space: nowrap;
+}
+.hourbtn:hover { color: var(--accent); }
+.hourbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.grid tbody th .nowdot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-left: 7px; vertical-align: 1px; }
+
+.grid tbody td { border-bottom: 1px solid var(--line); }
+.grid tbody tr:last-child th, .grid tbody tr:last-child td { border-bottom: 0; }
+
+.cell {
+  height: 34px; width: 100%; box-sizing: border-box;
+  display: flex; align-items: center; justify-content: center; gap: 3px;
+  font-family: var(--mono); font-size: 13px; cursor: pointer;
+  color: var(--cell-night-ink); background: var(--cell-night-bg);
+}
+.cell.work { background: var(--cell-work-bg); color: var(--cell-work-ink); font-weight: 600; }
+.cell.awake { background: var(--cell-awake-bg); color: var(--cell-awake-ink); }
+.cell.night { background: var(--cell-night-bg); color: var(--cell-night-ink); }
+.cell:hover { outline: 2px solid var(--accent); outline-offset: -2px; }
+.cell:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.cell .daymark { font-size: 9.5px; opacity: 0.85; align-self: flex-start; margin-top: 5px; }
+
+tr.is-picked th { background: var(--accent-soft); color: var(--accent); }
+tr.is-picked .cell { box-shadow: inset 0 0 0 2px var(--accent); }
+tr.is-now th::after { content: ""; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 12px; padding: 0 3px; }
+.key { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-muted); }
+.key i { width: 13px; height: 13px; border-radius: 4px; display: inline-block; border: 1px solid var(--line-strong); }
+.key-work i { background: var(--cell-work-bg); border-color: color-mix(in srgb, var(--cell-work-ink) 25%, transparent); }
+.key-awake i { background: var(--cell-awake-bg); border-color: color-mix(in srgb, var(--cell-awake-ink) 25%, transparent); }
+.key-night i { background: var(--cell-night-bg); }
+.key-now i { background: var(--accent); border-color: var(--accent); border-radius: 50%; width: 8px; height: 8px; }
+.hint { font-size: 12px; color: var(--ink-muted); margin-top: 10px; padding: 0 3px; }
+
+/* ------------------------------------------------------------------ picked */
+
+.picked {
+  margin-top: 18px; background: var(--panel); border: 1px solid var(--accent);
+  border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px 20px;
+}
+.picked-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.picked h2 { font-size: 20px; }
+.picked-actions { display: flex; gap: 8px; }
+.picked-list { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 1px; background: var(--line); border-radius: var(--radius-sm); overflow: hidden; }
+.picked-list li {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  background: var(--panel); padding: 10px 14px;
+}
+.picked-list .city { font-size: 14px; }
+.picked-list .city small { font-family: var(--mono); font-size: 10.5px; color: var(--ink-muted); margin-left: 6px; }
+.picked-list .time { font-family: var(--mono); font-size: 15px; font-weight: 600; }
+.picked-list .time.is-work { color: var(--ok); }
+
+/* --------------------------------------------------------------------- how */
+
+.how { margin-top: 40px; max-width: 70ch; }
+.how h2 { font-size: 22px; }
+.how p { margin-top: 11px; color: var(--ink-soft); font-size: 14.5px; }
+
+/* -------------------------------------------------------------------- foot */
+
+.foot { border-top: 1px solid var(--line); padding: 22px 20px 34px; text-align: center; color: var(--ink-muted); font-size: 12.5px; }
+.foot p + p { margin-top: 6px; }
+.foot a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid var(--line-strong); }
+.foot a:hover { color: var(--accent); border-color: var(--accent); }
+
+/* ------------------------------------------------------------- responsive */
+
+@media (max-width: 760px) {
+  .wrap { padding: 22px 14px 48px; }
+  .panels { grid-template-columns: 1fr; }
+  .brand-tagline { display: none; }
+  .icon-btn span { display: none; }
+  .icon-btn { padding: 8px; }
+  .grid thead th { padding: 7px 6px; font-size: 11.5px; }
+  .grid thead th .zone { display: none; }
+  .grid tbody th, .hourbtn { font-size: 11.5px; }
+  .hourbtn { padding: 0 7px; height: 38px; }
+  .cell { height: 38px; font-size: 12.5px; }
+  .result h2 { font-size: 20px; }
+  .topbar-inner { padding: 9px 14px; }
+}
+
+@media (max-width: 420px) {
+  .cell { font-size: 11.5px; }
+  .chip-zone { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Meeting Planner","applicationCategory":"BusinessApplication","operatingSystem":"Any (web browser)","url":"https://tekideki.github.io/Meeting-Planner/","description":"A meeting planner across time zones that runs entirely in the browser. Shows which hour of the day works for every city in the list, with daylight saving handled by the browser's own time zone data.","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"author":{"@type":"Person","name":"Kristian Mario Miskovic","alternateName":"TekiDeki"},"license":"https://www.apache.org/licenses/LICENSE-2.0","isAccessibleForFree":true}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#main" data-i18n="skipToContent">Skip to content</a>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#main">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="11.5" fill="none" stroke="currentColor" stroke-width="2"/><ellipse cx="16" cy="16" rx="5.2" ry="11.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4.5 16h23" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M16 9.5V16l4.6 3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+      </span>
+      <span class="brand-text">
+        <span>Meeting Planner</span>
+        <span class="brand-tagline" data-i18n="tagline">Meetings across time zones, without the maths.</span>
+      </span>
+    </a>
+
+    <div class="topbar-actions">
+      <button type="button" class="icon-btn" id="undoBtn" disabled data-i18n-title="undoTip" title="Undo the last change to the city list">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg>
+        <span data-i18n="undo">Undo</span>
+      </button>
+      <button type="button" class="icon-btn" id="themeBtn" data-i18n-title="themeToggle" title="Switch light or dark theme">
+        <svg class="theme-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.8 6.8 0 0 0 9.8 9.8Z"/></svg>
+        <svg class="theme-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg>
+        <span data-i18n="theme">Theme</span>
+      </button>
+      <label class="sr-only" for="langSelect" data-i18n="language">Language</label>
+      <select id="langSelect" aria-label="Language" data-i18n-aria-label="language">
+        <option value="en">English</option>
+        <option value="ro">Română</option>
+        <option value="sr-latn">Srpski</option>
+        <option value="sr-cyrl">Српски</option>
+      </select>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+
+  <section class="intro">
+    <h1 data-i18n="h1">Find the hour that works for everyone</h1>
+    <p class="lede" data-i18n="lede">Add the cities and see at a glance when everybody is inside working hours. Every offset is computed here, in this tab, with your browser's own time zone data.</p>
+    <ul class="claims">
+      <li data-i18n="claimNoUpload">No upload</li>
+      <li data-i18n="claimNoAccount">No account</li>
+      <li data-i18n="claimOffline">Works offline</li>
+      <li data-i18n="claimDst">Daylight saving included</li>
+    </ul>
+  </section>
+
+  <section class="panels" aria-label="Controls">
+
+    <div class="panel">
+      <h2 id="citiesHead" data-i18n="citiesTitle">Your cities</h2>
+      <p class="panel-sub" data-i18n="citiesSub">The first city sets the clock for the whole table.</p>
+      <div class="chips" id="cityChips"></div>
+      <p class="empty" id="cityEmpty" data-i18n="cityEmpty" hidden>No cities yet. Add one to start.</p>
+      <form class="addrow" id="cityForm" autocomplete="off">
+        <label class="sr-only" for="cityInput" data-i18n="cityInputLabel">City or time zone</label>
+        <input type="text" id="cityInput" list="cityList" spellcheck="false"
+               placeholder="Type a city, or a zone like Europe/Belgrade"
+               data-i18n-placeholder="cityPlaceholder" aria-describedby="cityMsg">
+        <datalist id="cityList"></datalist>
+        <button type="submit" class="btn btn-primary" data-i18n="addCity">Add</button>
+      </form>
+      <p class="msg" id="cityMsg" role="status" aria-live="polite"></p>
+    </div>
+
+    <div class="panel">
+      <h2 id="whenHead" data-i18n="whenTitle">When</h2>
+      <p class="panel-sub" data-i18n="whenSub">A day in the first city. Every other column follows it.</p>
+
+      <div class="dayrow">
+        <button type="button" class="round-btn" id="prevDayBtn" data-i18n-aria-label="prevDay" data-i18n-title="prevDay" aria-label="Previous day" title="Previous day">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+        </button>
+        <div class="daylabel">
+          <strong id="dateLabel">-</strong>
+          <span class="badge" id="todayBadge" data-i18n="todayBadge" hidden>Today</span>
+        </div>
+        <button type="button" class="round-btn" id="nextDayBtn" data-i18n-aria-label="nextDay" data-i18n-title="nextDay" aria-label="Next day" title="Next day">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+        <button type="button" class="btn btn-quiet" id="todayBtn" data-i18n="backToday">Today</button>
+      </div>
+
+      <div class="hours">
+        <span class="hours-label" data-i18n="workHours">Working hours</span>
+        <label class="sr-only" for="workFrom" data-i18n="workFrom">From</label>
+        <select id="workFrom" aria-label="Working hours start" data-i18n-aria-label="workFrom"></select>
+        <span class="dash" aria-hidden="true">-</span>
+        <label class="sr-only" for="workTo" data-i18n="workTo">To</label>
+        <select id="workTo" aria-label="Working hours end" data-i18n-aria-label="workTo"></select>
+      </div>
+      <p class="tiny" data-i18n="workNote">Used for the colours and for the suggestion.</p>
+    </div>
+  </section>
+
+  <section class="result" id="result" aria-live="polite">
+    <h2 id="resultTitle">-</h2>
+    <p id="resultBody">-</p>
+  </section>
+
+  <section class="gridcard">
+    <div class="grid-scroll">
+      <table class="grid" id="grid" aria-label="Hours against cities" data-i18n-aria-label="gridAria">
+        <thead id="gridHead"></thead>
+        <tbody id="gridBody"></tbody>
+      </table>
+    </div>
+    <div class="legend">
+      <span class="key key-work"><i aria-hidden="true"></i><span data-i18n="legendWork">Working</span></span>
+      <span class="key key-awake"><i aria-hidden="true"></i><span data-i18n="legendAwake">Awake</span></span>
+      <span class="key key-night"><i aria-hidden="true"></i><span data-i18n="legendNight">Night</span></span>
+      <span class="key key-now"><i aria-hidden="true"></i><span data-i18n="legendNow">Now</span></span>
+    </div>
+    <p class="hint" id="pickHint" data-i18n="pickHint">Pick a row to read that hour in every city.</p>
+  </section>
+
+  <section class="picked" id="picked" hidden>
+    <div class="picked-head">
+      <h2 data-i18n="pickedTitle">At this hour</h2>
+      <div class="picked-actions">
+        <button type="button" class="btn btn-primary btn-sm" id="copyBtn" data-i18n="copyBtn">Copy</button>
+        <button type="button" class="btn btn-quiet btn-sm" id="clearBtn" data-i18n="clearPick">Clear</button>
+      </div>
+    </div>
+    <ul class="picked-list" id="pickedList"></ul>
+  </section>
+
+  <section class="how">
+    <h2 data-i18n="howTitle">How it works</h2>
+    <p data-i18n="howP1">Offsets come from the browser, not from a table printed into the page.</p>
+    <p data-i18n="howP2">Nothing is sent anywhere.</p>
+    <p data-i18n="howP3">Two cities in the same time zone show the same hour.</p>
+  </section>
+</main>
+
+<footer class="foot">
+  <p><span>Meeting Planner</span> · <span data-i18n="footPrivacy">No upload, no account, no tracking.</span> · <span data-i18n="footLicence">Apache-2.0</span></p>
+  <p class="foot-links"><a href="https://freehtml.dev/">freehtml.dev</a> · <a href="https://github.com/TekiDeki/Meeting-Planner">source</a> · <a href="https://paypal.me/TekiDeki">paypal.me/TekiDeki</a></p>
+</footer>
+
+<script>
+/* Meeting Planner · TekiDeki - time zone engine
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2026 Kristian Mario Miskovic (TekiDeki)
+ *
+ * No offset table ships with this file. Every offset comes from the browser's
+ * own Intl data, so daylight saving changes are correct on the day the
+ * government changes them, including half hour zones such as India and
+ * Newfoundland.
+ *
+ * Pure functions only: no DOM, no network, no clock reads except where an
+ * argument says so.
+ */
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) {
+    module.exports = factory();
+  } else {
+    root.TD_PLANNER = factory();
+  }
+}(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
+
+  var MINUTE = 60000;
+  var DAY_MINUTES = 1440;
+
+  var formatters = Object.create(null);
+
+  /* hourCycle h23 is explicit on purpose: with hour12 false some engines
+   * report midnight as "24" and every offset calculation after it is wrong. */
+  function formatterFor(zone) {
+    var found = formatters[zone];
+    if (found) return found;
+    found = new Intl.DateTimeFormat('en-GB', {
+      timeZone: zone,
+      hourCycle: 'h23',
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit'
+    });
+    formatters[zone] = found;
+    return found;
+  }
+
+  function pad2(value) {
+    return (value < 10 ? '0' : '') + value;
+  }
+
+  function isValidZone(zone) {
+    if (!zone || typeof zone !== 'string') return false;
+    try {
+      formatterFor(zone).format(new Date(0));
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  /* Wall clock reading for an instant in a zone. */
+  function wall(zone, ms) {
+    var parts = formatterFor(zone).formatToParts(new Date(ms));
+    var out = { year: 0, month: 0, day: 0, hour: 0, minute: 0, second: 0 };
+    for (var i = 0; i < parts.length; i += 1) {
+      var type = parts[i].type;
+      if (type === 'year' || type === 'month' || type === 'day' ||
+          type === 'hour' || type === 'minute' || type === 'second') {
+        out[type] = parseInt(parts[i].value, 10);
+      }
+    }
+    if (out.hour === 24) out.hour = 0;
+    return out;
+  }
+
+  function wallKey(zone, ms) {
+    var w = wall(zone, ms);
+    return w.year + '-' + pad2(w.month) + '-' + pad2(w.day);
+  }
+
+  function localMinutes(zone, ms) {
+    var w = wall(zone, ms);
+    return w.hour * 60 + w.minute;
+  }
+
+  function localHour(zone, ms) {
+    return wall(zone, ms).hour;
+  }
+
+  /* Offset in minutes such that local time = UTC + offset. */
+  function zoneOffset(zone, ms) {
+    var whole = Math.floor(ms / 1000) * 1000;
+    var w = wall(zone, ms);
+    var asUtc = Date.UTC(w.year, w.month - 1, w.day, w.hour, w.minute, w.second);
+    return Math.round((asUtc - whole) / MINUTE);
+  }
+
+  function parseDateKey(key) {
+    var parts = String(key).split('-');
+    return { year: parseInt(parts[0], 10), month: parseInt(parts[1], 10), day: parseInt(parts[2], 10) };
+  }
+
+  function dateKeyOf(year, month, day) {
+    return year + '-' + pad2(month) + '-' + pad2(day);
+  }
+
+  function addDays(key, count) {
+    var p = parseDateKey(key);
+    var shifted = new Date(Date.UTC(p.year, p.month - 1, p.day) + count * 86400000);
+    return dateKeyOf(shifted.getUTCFullYear(), shifted.getUTCMonth() + 1, shifted.getUTCDate());
+  }
+
+  function dayOffsetBetween(fromKey, toKey) {
+    var a = parseDateKey(fromKey);
+    var b = parseDateKey(toKey);
+    return Math.round((Date.UTC(b.year, b.month - 1, b.day) - Date.UTC(a.year, a.month - 1, a.day)) / 86400000);
+  }
+
+  /* First instant whose wall date in this zone is on or after `key`.
+   *
+   * A binary search rather than arithmetic because midnight does not always
+   * exist: several zones have skipped 00:00 on a DST switch, so "start of day"
+   * has to be discovered, not calculated. */
+  function dayStartUtc(zone, key) {
+    var p = parseDateKey(key);
+    var naive = Date.UTC(p.year, p.month - 1, p.day);
+    var low = naive - 16 * 60 * MINUTE;
+    var high = naive + 16 * 60 * MINUTE;
+    if (wallKey(zone, high) < key) return high;
+    while (high - low > MINUTE) {
+      var mid = low + Math.floor((high - low) / MINUTE / 2) * MINUTE;
+      if (mid <= low) mid = low + MINUTE;
+      if (wallKey(zone, mid) >= key) high = mid;
+      else low = mid;
+    }
+    return high;
+  }
+
+  function nowKey(zone, nowMs) {
+    return wallKey(zone, nowMs);
+  }
+
+  function hhmm(minutes) {
+    var value = ((Math.round(minutes) % DAY_MINUTES) + DAY_MINUTES) % DAY_MINUTES;
+    return pad2(Math.floor(value / 60)) + ':' + pad2(value % 60);
+  }
+
+  function inRange(minute, start, end) {
+    var a = ((start % DAY_MINUTES) + DAY_MINUTES) % DAY_MINUTES;
+    var b = ((end % DAY_MINUTES) + DAY_MINUTES) % DAY_MINUTES;
+    if (a === b) return false;
+    if (a < b) return minute >= a && minute < b;
+    return minute >= a || minute < b;
+  }
+
+  var WORK = 'work';
+  var AWAKE = 'awake';
+  var NIGHT = 'night';
+
+  /* Three bands: working hours, awake but off work, sleep. The awake band is
+   * two hours wider on each side. */
+  function classify(minute, workStart, workEnd) {
+    var start = workStart * 60;
+    var end = workEnd * 60;
+    if (inRange(minute, start, end)) return WORK;
+    if (inRange(minute, start - 120, end + 120)) return AWAKE;
+    return NIGHT;
+  }
+
+  function zoneLabel(zone) {
+    return zone ? zone.replace(/_/g, ' ') : '';
+  }
+
+  /* Cross zone reading at one instant. */
+  function reading(zone, ms, homeZone, homeKey) {
+    var minutes = localMinutes(zone, ms);
+    var key = wallKey(zone, ms);
+    return {
+      zone: zone,
+      label: hhmm(minutes),
+      minutes: minutes,
+      dateKey: key,
+      dayOffset: homeKey ? dayOffsetBetween(homeKey, key) : 0
+    };
+  }
+
+  /* Rows of the grid: 24 hourly instants from home midnight.
+   * Labels are read back from the real instant, so on a spring forward day the
+   * 02:00 row simply does not appear instead of showing invented data. */
+  function rows(homeZone, homeKey, nowMs) {
+    var start = dayStartUtc(homeZone, homeKey);
+    var list = [];
+    var now = typeof nowMs === 'number' ? nowMs : null;
+    for (var i = 0; i < 24; i += 1) {
+      var at = start + i * 60 * MINUTE;
+      list.push({
+        index: i,
+        at: at,
+        hour: localHour(homeZone, at),
+        minute: localMinutes(homeZone, at),
+        label: hhmm(localMinutes(homeZone, at)),
+        isNow: now !== null && now >= at && now < at + 60 * MINUTE
+      });
+    }
+    return list;
+  }
+
+  /* Best window where every city is inside working hours.
+   *
+   * Searched at half hour steps because a five and a half hour offset would
+   * otherwise be rounded into a false overlap. */
+  function overlap(zones, options) {
+    var opts = options || {};
+    var homeKey = opts.dateKey;
+    var homeZone = opts.homeZone;
+    var workStart = typeof opts.workStart === 'number' ? opts.workStart : 9;
+    var workEnd = typeof opts.workEnd === 'number' ? opts.workEnd : 18;
+    var step = opts.step || 30;
+
+    var start = dayStartUtc(homeZone, homeKey);
+    var slots = [];
+    for (var i = 0; i < DAY_MINUTES; i += step) {
+      var at = start + i * MINUTE;
+      var inWork = 0;
+      for (var z = 0; z < zones.length; z += 1) {
+        if (classify(localMinutes(zones[z], at), workStart, workEnd) === WORK) inWork += 1;
+      }
+      slots.push({ at: at, inWork: inWork, all: inWork === zones.length });
+    }
+
+    function runs(predicate) {
+      var found = [];
+      var open = null;
+      for (var s = 0; s < slots.length; s += 1) {
+        if (predicate(slots[s])) {
+          if (!open) open = { from: s, to: s + 1 };
+          else open.to = s + 1;
+        } else if (open) {
+          found.push(open);
+          open = null;
+        }
+      }
+      if (open) found.push(open);
+      return found;
+    }
+
+    function longest(list) {
+      var best = null;
+      for (var i = 0; i < list.length; i += 1) {
+        if (!best || (list[i].to - list[i].from) > (best.to - best.from)) best = list[i];
+      }
+      return best;
+    }
+
+    function windowOf(run) {
+      var first = slots[run.from].at;
+      var last = slots[run.to - 1].at + step * MINUTE;
+      return {
+        from: first,
+        to: last,
+        minutes: Math.round((last - first) / MINUTE),
+        startLabel: hhmm(localMinutes(homeZone, first)),
+        endLabel: hhmm(localMinutes(homeZone, last)),
+        rows: zones.map(function (zone) {
+          return {
+            zone: zone,
+            label: zoneLabel(zone),
+            start: hhmm(localMinutes(zone, first)),
+            end: hhmm(localMinutes(zone, last)),
+            dayOffset: dayOffsetBetween(homeKey, wallKey(zone, first))
+          };
+        })
+      };
+    }
+
+    var full = longest(runs(function (slot) { return slot.all; }));
+    if (full) {
+      var one = windowOf(full);
+      one.kind = 'all';
+      one.citiesInWork = zones.length;
+      return one;
+    }
+
+    var most = 0;
+    for (var s = 0; s < slots.length; s += 1) {
+      if (slots[s].inWork > most) most = slots[s].inWork;
+    }
+    if (most === 0) {
+      return { kind: 'none', minutes: 0, citiesInWork: 0, rows: [] };
+    }
+    var partial = longest(runs(function (slot) { return slot.inWork === most; }));
+    var two = windowOf(partial);
+    two.kind = 'partial';
+    two.citiesInWork = most;
+    return two;
+  }
+
+  function dayNameIndex(key) {
+    var p = parseDateKey(key);
+    return new Date(Date.UTC(p.year, p.month - 1, p.day)).getUTCDay();
+  }
+
+  /* Cities travel through the URL as "zone~Name" pairs. Two cities can share
+   * a zone (Milan and Rome do), and the row has to keep the name the person
+   * picked, so the zone alone is not enough. */
+  function parseCities(value) {
+    if (!value) return [];
+    var seen = Object.create(null);
+    var out = [];
+    String(value).split(',').forEach(function (part) {
+      var bits = part.split('~');
+      var zone = decodeURIComponent(bits[0] || '').trim();
+      var name = decodeURIComponent((bits[1] || '').replace(/\+/g, ' ')).trim();
+      if (!zone || seen[zone] || !isValidZone(zone)) return;
+      seen[zone] = true;
+      out.push({ zone: zone, name: name || zoneLabel(zone) });
+    });
+    return out;
+  }
+
+  function encodeCities(cities) {
+    return (cities || []).map(function (city) {
+      var zone = typeof city === 'string' ? city : city.zone;
+      var name = typeof city === 'string' ? '' : city.name;
+      var label = name && name !== zoneLabel(zone) ? '~' + encodeURIComponent(name).replace(/%20/g, '+') : '';
+      return encodeURIComponent(zone) + label;
+    }).join(',');
+  }
+
+  function encodeState(state) {
+    return [
+      'z=' + encodeCities(state.cities || state.zones || []),
+      'd=' + state.dateKey,
+      's=' + state.workStart,
+      'e=' + state.workEnd
+    ].join('&');
+  }
+
+  function decodeState(hash) {
+    var raw = String(hash || '').replace(/^#/, '');
+    if (!raw) return null;
+    var out = { cities: null, dateKey: null, workStart: null, workEnd: null };
+    raw.split('&').forEach(function (pair) {
+      var index = pair.indexOf('=');
+      if (index < 0) return;
+      var key = pair.slice(0, index);
+      var value = pair.slice(index + 1);
+      if (key === 'z') out.cities = parseCities(value);
+      else if (key === 'd' && /^\d{4}-\d{2}-\d{2}$/.test(value)) out.dateKey = value;
+      else if (key === 's') out.workStart = parseInt(value, 10);
+      else if (key === 'e') out.workEnd = parseInt(value, 10);
+    });
+    if (out.cities && !out.cities.length) out.cities = null;
+    return out;
+  }
+
+  var ENGINE = {
+    MINUTE: MINUTE,
+    WORK: WORK,
+    AWAKE: AWAKE,
+    NIGHT: NIGHT,
+    wall: wall,
+    wallKey: wallKey,
+    localMinutes: localMinutes,
+    localHour: localHour,
+    zoneOffset: zoneOffset,
+    dayStartUtc: dayStartUtc,
+    addDays: addDays,
+    dateKeyOf: dateKeyOf,
+    dayOffsetBetween: dayOffsetBetween,
+    nowKey: nowKey,
+    hhmm: hhmm,
+    inRange: inRange,
+    classify: classify,
+    reading: reading,
+    rows: rows,
+    overlap: overlap,
+    dayNameIndex: dayNameIndex,
+    parseCities: parseCities,
+    encodeCities: encodeCities,
+    encodeState: encodeState,
+    decodeState: decodeState,
+    isValidZone: isValidZone,
+    zoneLabel: zoneLabel
+  };
+
+  return ENGINE;
+}));
+</script>
+<script>
+/* Meeting Planner · TekiDeki - city list
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2026 Kristian Mario Miskovic (TekiDeki)
+ *
+ * A short list of well known cities, plus the rule that any IANA zone can be
+ * typed by hand. Shipping a full city database would add megabytes and go
+ * stale; the browser already knows every zone and every offset.
+ *
+ * Names stay in their common English form in every language: they are proper
+ * nouns, and transliterating Tokyo into three scripts helps nobody.
+ */
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) {
+    module.exports = factory();
+  } else {
+    root.TD_CITIES = factory();
+  }
+}(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
+
+  var RAW = [
+    ['Belgrade', 'Europe/Belgrade', 'RS'],
+    ['Zagreb', 'Europe/Zagreb', 'HR'],
+    ['Sarajevo', 'Europe/Sarajevo', 'BA'],
+    ['Skopje', 'Europe/Skopje', 'MK'],
+    ['Podgorica', 'Europe/Podgorica', 'ME'],
+    ['Ljubljana', 'Europe/Ljubljana', 'SI'],
+    ['Budapest', 'Europe/Budapest', 'HU'],
+    ['Bucharest', 'Europe/Bucharest', 'RO'],
+    ['Sofia', 'Europe/Sofia', 'BG'],
+    ['Athens', 'Europe/Athens', 'GR'],
+    ['Istanbul', 'Europe/Istanbul', 'TR'],
+    ['Vienna', 'Europe/Vienna', 'AT'],
+    ['Berlin', 'Europe/Berlin', 'DE'],
+    ['Zurich', 'Europe/Zurich', 'CH'],
+    ['Prague', 'Europe/Prague', 'CZ'],
+    ['Bratislava', 'Europe/Bratislava', 'SK'],
+    ['Warsaw', 'Europe/Warsaw', 'PL'],
+    ['Kyiv', 'Europe/Kyiv', 'UA'],
+    ['Moscow', 'Europe/Moscow', 'RU'],
+    ['Minsk', 'Europe/Minsk', 'BY'],
+    ['Chisinau', 'Europe/Chisinau', 'MD'],
+    ['Tirana', 'Europe/Tirane', 'AL'],
+    ['London', 'Europe/London', 'GB'],
+    ['Dublin', 'Europe/Dublin', 'IE'],
+    ['Lisbon', 'Europe/Lisbon', 'PT'],
+    ['Madrid', 'Europe/Madrid', 'ES'],
+    ['Paris', 'Europe/Paris', 'FR'],
+    ['Amsterdam', 'Europe/Amsterdam', 'NL'],
+    ['Brussels', 'Europe/Brussels', 'BE'],
+    ['Luxembourg', 'Europe/Luxembourg', 'LU'],
+    ['Copenhagen', 'Europe/Copenhagen', 'DK'],
+    ['Stockholm', 'Europe/Stockholm', 'SE'],
+    ['Oslo', 'Europe/Oslo', 'NO'],
+    ['Helsinki', 'Europe/Helsinki', 'FI'],
+    ['Tallinn', 'Europe/Tallinn', 'EE'],
+    ['Riga', 'Europe/Riga', 'LV'],
+    ['Vilnius', 'Europe/Vilnius', 'LT'],
+    ['Rome', 'Europe/Rome', 'IT'],
+    ['Milan', 'Europe/Rome', 'IT'],
+    ['Valletta', 'Europe/Malta', 'MT'],
+    ['Reykjavik', 'Atlantic/Reykjavik', 'IS'],
+    ['Nicosia', 'Asia/Nicosia', 'CY'],
+    ['Tbilisi', 'Asia/Tbilisi', 'GE'],
+    ['Yerevan', 'Asia/Yerevan', 'AM'],
+    ['Baku', 'Asia/Baku', 'AZ'],
+    ['Casablanca', 'Africa/Casablanca', 'MA'],
+    ['Algiers', 'Africa/Algiers', 'DZ'],
+    ['Tunis', 'Africa/Tunis', 'TN'],
+    ['Cairo', 'Africa/Cairo', 'EG'],
+    ['Lagos', 'Africa/Lagos', 'NG'],
+    ['Accra', 'Africa/Accra', 'GH'],
+    ['Nairobi', 'Africa/Nairobi', 'KE'],
+    ['Addis Ababa', 'Africa/Addis_Ababa', 'ET'],
+    ['Johannesburg', 'Africa/Johannesburg', 'ZA'],
+    ['Cape Town', 'Africa/Johannesburg', 'ZA'],
+    ['Dubai', 'Asia/Dubai', 'AE'],
+    ['Riyadh', 'Asia/Riyadh', 'SA'],
+    ['Doha', 'Asia/Qatar', 'QA'],
+    ['Kuwait City', 'Asia/Kuwait', 'KW'],
+    ['Tel Aviv', 'Asia/Jerusalem', 'IL'],
+    ['Beirut', 'Asia/Beirut', 'LB'],
+    ['Amman', 'Asia/Amman', 'JO'],
+    ['Baghdad', 'Asia/Baghdad', 'IQ'],
+    ['Tehran', 'Asia/Tehran', 'IR'],
+    ['Karachi', 'Asia/Karachi', 'PK'],
+    ['Mumbai', 'Asia/Kolkata', 'IN'],
+    ['Delhi', 'Asia/Kolkata', 'IN'],
+    ['Bengaluru', 'Asia/Kolkata', 'IN'],
+    ['Colombo', 'Asia/Colombo', 'LK'],
+    ['Kathmandu', 'Asia/Kathmandu', 'NP'],
+    ['Dhaka', 'Asia/Dhaka', 'BD'],
+    ['Yangon', 'Asia/Yangon', 'MM'],
+    ['Bangkok', 'Asia/Bangkok', 'TH'],
+    ['Hanoi', 'Asia/Ho_Chi_Minh', 'VN'],
+    ['Jakarta', 'Asia/Jakarta', 'ID'],
+    ['Singapore', 'Asia/Singapore', 'SG'],
+    ['Kuala Lumpur', 'Asia/Kuala_Lumpur', 'MY'],
+    ['Manila', 'Asia/Manila', 'PH'],
+    ['Hong Kong', 'Asia/Hong_Kong', 'HK'],
+    ['Shanghai', 'Asia/Shanghai', 'CN'],
+    ['Beijing', 'Asia/Shanghai', 'CN'],
+    ['Taipei', 'Asia/Taipei', 'TW'],
+    ['Seoul', 'Asia/Seoul', 'KR'],
+    ['Tokyo', 'Asia/Tokyo', 'JP'],
+    ['Ulaanbaatar', 'Asia/Ulaanbaatar', 'MN'],
+    ['Perth', 'Australia/Perth', 'AU'],
+    ['Sydney', 'Australia/Sydney', 'AU'],
+    ['Melbourne', 'Australia/Melbourne', 'AU'],
+    ['Brisbane', 'Australia/Brisbane', 'AU'],
+    ['Auckland', 'Pacific/Auckland', 'NZ'],
+    ['Honolulu', 'Pacific/Honolulu', 'US'],
+    ['Anchorage', 'America/Anchorage', 'US'],
+    ['Vancouver', 'America/Vancouver', 'CA'],
+    ['Calgary', 'America/Edmonton', 'CA'],
+    ['Toronto', 'America/Toronto', 'CA'],
+    ['Montreal', 'America/Toronto', 'CA'],
+    ['New York', 'America/New_York', 'US'],
+    ['Boston', 'America/New_York', 'US'],
+    ['Washington DC', 'America/New_York', 'US'],
+    ['Chicago', 'America/Chicago', 'US'],
+    ['Austin', 'America/Chicago', 'US'],
+    ['Denver', 'America/Denver', 'US'],
+    ['Phoenix', 'America/Phoenix', 'US'],
+    ['Los Angeles', 'America/Los_Angeles', 'US'],
+    ['San Francisco', 'America/Los_Angeles', 'US'],
+    ['Seattle', 'America/Los_Angeles', 'US'],
+    ['Mexico City', 'America/Mexico_City', 'MX'],
+    ['Bogota', 'America/Bogota', 'CO'],
+    ['Lima', 'America/Lima', 'PE'],
+    ['Santiago', 'America/Santiago', 'CL'],
+    ['Buenos Aires', 'America/Argentina/Buenos_Aires', 'AR'],
+    ['Montevideo', 'America/Montevideo', 'UY'],
+    ['Sao Paulo', 'America/Sao_Paulo', 'BR'],
+    ['Rio de Janeiro', 'America/Sao_Paulo', 'BR'],
+    ['Caracas', 'America/Caracas', 'VE'],
+    ['Panama City', 'America/Panama', 'PA'],
+    ['Havana', 'America/Havana', 'CU']
+  ];
+
+  var CITIES = RAW.map(function (row) {
+    return { name: row[0], zone: row[1], country: row[2] };
+  });
+
+  /* Accent and case insensitive match, so "sao paulo" finds "Sao Paulo" and
+   * "novi sad" style typing does not need the exact spelling. */
+  function normalise(text) {
+    var lower = String(text || '').toLowerCase();
+    if (lower.normalize) {
+      lower = lower.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+    return lower.replace(/[^a-z0-9]+/g, ' ').trim();
+  }
+
+  function findCity(name) {
+    var wanted = normalise(name);
+    if (!wanted) return null;
+    for (var i = 0; i < CITIES.length; i += 1) {
+      if (normalise(CITIES[i].name) === wanted) return CITIES[i];
+    }
+    return null;
+  }
+
+  function findByNameOrZone(value) {
+    var raw = String(value || '').trim();
+    if (!raw) return null;
+    var byName = findCity(raw);
+    if (byName) return byName;
+    for (var i = 0; i < CITIES.length; i += 1) {
+      if (CITIES[i].zone === raw) return CITIES[i];
+    }
+    return null;
+  }
+
+  function search(query, limit) {
+    var wanted = normalise(query);
+    var max = limit || 8;
+    if (!wanted) return CITIES.slice(0, max);
+    var starts = [];
+    var contains = [];
+    for (var i = 0; i < CITIES.length; i += 1) {
+      var name = normalise(CITIES[i].name);
+      if (name.indexOf(wanted) === 0) starts.push(CITIES[i]);
+      else if (name.indexOf(wanted) > 0) contains.push(CITIES[i]);
+    }
+    return starts.concat(contains).slice(0, max);
+  }
+
+  function byZone(zone) {
+    for (var i = 0; i < CITIES.length; i += 1) {
+      if (CITIES[i].zone === zone) return CITIES[i];
+    }
+    return null;
+  }
+
+  return {
+    list: CITIES,
+    findCity: findCity,
+    findByNameOrZone: findByNameOrZone,
+    byZone: byZone,
+    search: search,
+    normalise: normalise
+  };
+}));
+</script>
+<script>
+/* Generated by build.py from src/i18n/locales.json. Do not edit. */
+window.TD_LOCALES = {
+  "en": {"addCity": "Add", "backToday": "Today", "bestAllBody": "{start} to {end}, your time.", "bestAllTitle": "Everyone is free", "bestNoneBody": "No hour has everybody awake. Split the meeting in two.", "bestNoneTitle": "Nothing lines up", "bestPartialBody": "Closest is {count} of {total} cities inside working hours.", "bestPartialTitle": "No hour fits everyone", "citiesSub": "The first city sets the clock for the whole table.", "citiesTitle": "Your cities", "cityDuplicate": "{city} is already in the list.", "cityEmpty": "No cities yet. Add one to start.", "cityInputLabel": "City or time zone", "cityLimit": "Eight cities is the limit, otherwise the table stops being readable.", "cityPlaceholder": "Type a city, or a zone like Europe/Belgrade", "cityUnknown": "\"{query}\" is not a city or a time zone I can find.", "claimDst": "Daylight saving included", "claimNoAccount": "No account", "claimNoUpload": "No upload", "claimOffline": "Works offline", "clearPick": "Clear", "copiedBtn": "Copied", "copyBtn": "Copy", "footLicence": "Apache-2.0", "footPrivacy": "No upload, no account, no tracking.", "gridAria": "Hours against cities", "gridCorner": "Your time", "h1": "Find the hour that works for everyone", "howP1": "Offsets come from the browser, not from a table printed into the page. When a country changes its daylight saving rules, this page follows the same day, without an update.", "howP2": "Nothing is sent anywhere. The cities and the chosen day live in the address bar and in this browser, so you can send the link to the other side and they see exactly what you see.", "howP3": "Two cities in the same time zone show the same hour. That is not a bug, it is the same clock.", "howTitle": "How it works", "language": "Language", "lede": "Add the cities and see at a glance when everybody is inside working hours. Every offset is computed here, in this tab, with your browser's own time zone data.", "legendAwake": "Awake", "legendNight": "Night", "legendNow": "Now", "legendWork": "Working", "nextDay": "Next day", "pickHint": "Pick a row to read that hour in every city.", "pickedTitle": "At this hour", "prevDay": "Previous day", "removeCity": "Remove {city}", "shareHeader": "{day} at {time}, {city} time", "skipToContent": "Skip to content", "tagline": "Meetings across time zones, without the maths.", "theme": "Theme", "themeToggle": "Switch light or dark theme", "todayBadge": "Today", "undo": "Undo", "undoTip": "Undo the last change to the city list", "whenSub": "A day in the first city. Every other column follows it.", "whenTitle": "When", "workFrom": "From", "workHours": "Working hours", "workNote": "Used for the colours and for the suggestion.", "workTo": "To"},
+  "ro": {"addCity": "Adaugă", "backToday": "Azi", "bestAllBody": "De la {start} la {end}, ora ta.", "bestAllTitle": "Toți sunt liberi", "bestNoneBody": "Nu există nicio oră în care toți să fie treji. Împarte întâlnirea în două.", "bestNoneTitle": "Nimic nu se aliniază", "bestPartialBody": "Cel mai aproape: {count} din {total} orașe în program.", "bestPartialTitle": "Nicio oră nu se potrivește tuturor", "citiesSub": "Primul oraș dă ceasul pentru tot tabelul.", "citiesTitle": "Orașele tale", "cityDuplicate": "{city} e deja în listă.", "cityEmpty": "Niciun oraș încă. Adaugă unul ca să începi.", "cityInputLabel": "Oraș sau fus orar", "cityLimit": "Opt orașe e limita, altfel tabelul nu mai e lizibil.", "cityPlaceholder": "Scrie un oraș, sau o zonă ca Europe/Belgrade", "cityUnknown": "\"{query}\" nu e un oraș sau un fus orar cunoscut.", "claimDst": "Ora de vară inclusă", "claimNoAccount": "Fără cont", "claimNoUpload": "Fără încărcare", "claimOffline": "Merge offline", "clearPick": "Golește", "copiedBtn": "Copiat", "copyBtn": "Copiază", "footLicence": "Apache-2.0", "footPrivacy": "Fără încărcare, fără cont, fără urmărire.", "gridAria": "Ore față de orașe", "gridCorner": "Ora ta", "h1": "Găsește ora care merge pentru toți", "howP1": "Diferențele de fus vin din browser, nu dintr-un tabel scris în pagină. Când o țară își schimbă regulile de oră de vară, pagina se aliniază în aceeași zi, fără nicio actualizare.", "howP2": "Nimic nu pleacă nicăieri. Orașele și ziua aleasă stau în bara de adrese și în acest browser, deci poți trimite linkul celeilalte părți și vede exact ce vezi tu.", "howP3": "Două orașe în același fus orar arată aceeași oră. Nu e o eroare, e același ceas.", "howTitle": "Cum funcționează", "language": "Limba", "lede": "Adaugă orașele și vezi dintr-o privire când toată lumea e în program. Fiecare diferență de fus se calculează aici, în acest tab, cu datele de fus orar din browserul tău.", "legendAwake": "Treaz", "legendNight": "Noapte", "legendNow": "Acum", "legendWork": "Program", "nextDay": "Ziua următoare", "pickHint": "Atinge un rând ca să vezi ora aceea în fiecare oraș.", "pickedTitle": "La ora asta", "prevDay": "Ziua anterioară", "removeCity": "Elimină {city}", "shareHeader": "{day}, ora {time}, timpul din {city}", "skipToContent": "Sari la conținut", "tagline": "Întâlniri peste fusuri orare, fără calcule.", "theme": "Tema", "themeToggle": "Comută tema deschisă sau închisă", "todayBadge": "Azi", "undo": "Anulează", "undoTip": "Anulează ultima schimbare din lista de orașe", "whenSub": "O zi în primul oraș. Restul coloanelor o urmează.", "whenTitle": "Când", "workFrom": "De la", "workHours": "Ore de lucru", "workNote": "Folosit pentru culori și pentru sugestie.", "workTo": "Până la"},
+  "sr-latn": {"addCity": "Dodaj", "backToday": "Danas", "bestAllBody": "Od {start} do {end}, tvoje vreme.", "bestAllTitle": "Svi su slobodni", "bestNoneBody": "Nema časa u kome su svi budni. Podeli sastanak na dva.", "bestNoneTitle": "Ništa se ne poklapa", "bestPartialBody": "Najbliže: {count} od {total} gradova u radnom vremenu.", "bestPartialTitle": "Nijedan čas ne odgovara svima", "citiesSub": "Prvi grad daje čas za celu tabelu.", "citiesTitle": "Tvoji gradovi", "cityDuplicate": "{city} je već na listi.", "cityEmpty": "Još nema gradova. Dodaj jedan da počneš.", "cityInputLabel": "Grad ili vremenska zona", "cityLimit": "Osam gradova je granica, inače tabela prestaje da bude čitljiva.", "cityPlaceholder": "Upiši grad, ili zonu kao Europe/Belgrade", "cityUnknown": "\"{query}\" nije grad ni vremenska zona koju mogu da nađem.", "claimDst": "Letnje vreme uračunato", "claimNoAccount": "Bez naloga", "claimNoUpload": "Bez otpremanja", "claimOffline": "Radi offline", "clearPick": "Očisti", "copiedBtn": "Kopirano", "copyBtn": "Kopiraj", "footLicence": "Apache-2.0", "footPrivacy": "Bez otpremanja, bez naloga, bez praćenja.", "gridAria": "Časovi prema gradovima", "gridCorner": "Tvoje vreme", "h1": "Nađi čas koji svima odgovara", "howP1": "Razlike u zonama dolaze iz pregledača, a ne iz tabele upisane u stranicu. Kada neka zemlja promeni pravila letnjeg vremena, stranica se uskladi istog dana, bez ikakvog ažuriranja.", "howP2": "Ništa se nigde ne šalje. Gradovi i izabrani dan stoje u adresnoj traci i u ovom pregledaču, pa možeš da pošalješ link drugoj strani i ona vidi tačno ono što vidiš ti.", "howP3": "Dva grada u istoj vremenskoj zoni pokazuju isti čas. To nije greška, to je isti sat.", "howTitle": "Kako radi", "language": "Jezik", "lede": "Dodaj gradove i vidi na prvi pogled kada su svi u radnom vremenu. Svaka razlika u zoni se računa ovde, u ovom tabu, sa podacima o zonama iz tvog pregledača.", "legendAwake": "Budan", "legendNight": "Noć", "legendNow": "Sada", "legendWork": "Radno", "nextDay": "Sledeći dan", "pickHint": "Dodirni red da vidiš taj čas u svakom gradu.", "pickedTitle": "U ovom času", "prevDay": "Prethodni dan", "removeCity": "Ukloni {city}", "shareHeader": "{day} u {time}, vreme za {city}", "skipToContent": "Pređi na sadržaj", "tagline": "Sastanci preko vremenskih zona, bez računanja.", "theme": "Tema", "themeToggle": "Prebaci svetlu ili tamnu temu", "todayBadge": "Danas", "undo": "Poništi", "undoTip": "Poništi poslednju izmenu liste gradova", "whenSub": "Jedan dan u prvom gradu. Ostale kolone ga prate.", "whenTitle": "Kada", "workFrom": "Od", "workHours": "Radno vreme", "workNote": "Koristi se za boje i za predlog.", "workTo": "Do"},
+  "sr-cyrl": {"addCity": "Додај", "backToday": "Данас", "bestAllBody": "Од {start} до {end}, твоје време.", "bestAllTitle": "Сви су слободни", "bestNoneBody": "Нема часа у коме су сви будни. Подели састанак на два.", "bestNoneTitle": "Ништа се не поклапа", "bestPartialBody": "Најближе: {count} од {total} градова у радном времену.", "bestPartialTitle": "Ниједан час не одговара свима", "citiesSub": "Први град даје час за целу табелу.", "citiesTitle": "Твоји градови", "cityDuplicate": "{city} је већ на листи.", "cityEmpty": "Још нема градова. Додај један да почнеш.", "cityInputLabel": "Град или временска зона", "cityLimit": "Осам градова је граница, иначе табела престаје да буде читљива.", "cityPlaceholder": "Упиши град, или зону као Europe/Belgrade", "cityUnknown": "\"{query}\" није град ни временска зона коју могу да нађем.", "claimDst": "Летње време урачунато", "claimNoAccount": "Без налога", "claimNoUpload": "Без отпремања", "claimOffline": "Ради оффлине", "clearPick": "Очисти", "copiedBtn": "Копирано", "copyBtn": "Копирај", "footLicence": "Apache-2.0", "footPrivacy": "Без отпремања, без налога, без праћења.", "gridAria": "Часови према градовима", "gridCorner": "Твоје време", "h1": "Нађи час који свима одговара", "howP1": "Разлике у зонама долазе из прегледача, а не из табеле уписане у страницу. Када нека земља промени правила летњег времена, страница се усклади истог дана, без икаквог ажурирања.", "howP2": "Ништа се нигде не шаље. Градови и изабрани дан стоје у адресној траци и у овом прегледачу, па можеш да пошаљеш линк другој страни и она види тачно оно што видиш ти.", "howP3": "Два града у истој временској зони показују исти час. То није грешка, то је исти сат.", "howTitle": "Како ради", "language": "Језик", "lede": "Додај градове и види на први поглед када су сви у радном времену. Свака разлика у зони се рачуна овде, у овом табу, са подацима о зонама из твог прегледача.", "legendAwake": "Будан", "legendNight": "Ноћ", "legendNow": "Сада", "legendWork": "Радно", "nextDay": "Следећи дан", "pickHint": "Додирни ред да видиш тај час у сваком граду.", "pickedTitle": "У овом часу", "prevDay": "Претходни дан", "removeCity": "Уклони {city}", "shareHeader": "{day} у {time}, време за {city}", "skipToContent": "Пређи на садржај", "tagline": "Састанци преко временских зона, без рачунања.", "theme": "Тема", "themeToggle": "Пребаци светлу или тамну тему", "todayBadge": "Данас", "undo": "Поништи", "undoTip": "Поништи последњу измену листе градова", "whenSub": "Један дан у првом граду. Остале колоне га прате.", "whenTitle": "Када", "workFrom": "Од", "workHours": "Радно време", "workNote": "Користи се за боје и за предлог.", "workTo": "До"}
+};
+</script>
+<script>
+/* Meeting Planner · TekiDeki - interface
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2026 Kristian Mario Miskovic (TekiDeki)
+ *
+ * All state lives in this file plus the address bar. There is no request to
+ * any server, including the first one.
+ */
+(function () {
+  'use strict';
+
+  var P = window.TD_PLANNER;
+  var C = window.TD_CITIES;
+  var LOCALES = window.TD_LOCALES;
+
+  var MAX_CITIES = 8;
+  var STORE = 'td-zones.';
+
+  var LOCALE_TAG = {
+    'en': 'en-GB',
+    'ro': 'ro-RO',
+    'sr-latn': 'sr-Latn-RS',
+    'sr-cyrl': 'sr-Cyrl-RS'
+  };
+
+  var state = {
+    lang: 'en',
+    theme: 'light',
+    cities: [],
+    dateKey: null,
+    workStart: 9,
+    workEnd: 18,
+    picked: null
+  };
+
+  var undoStack = [];
+
+  /* ------------------------------------------------------------ utilities */
+
+  function $(id) { return document.getElementById(id); }
+
+  function t(key) {
+    var table = LOCALES[state.lang] || LOCALES.en;
+    if (table && Object.prototype.hasOwnProperty.call(table, key)) return table[key];
+    return (LOCALES.en && LOCALES.en[key]) || key;
+  }
+
+  function fill(key, values) {
+    var out = t(key);
+    Object.keys(values || {}).forEach(function (name) {
+      out = out.split('{' + name + '}').join(String(values[name]));
+    });
+    return out;
+  }
+
+  function store(key, value) {
+    try { window.localStorage.setItem(STORE + key, value); } catch (error) { /* private mode */ }
+  }
+
+  function stored(key) {
+    try { return window.localStorage.getItem(STORE + key); } catch (error) { return null; }
+  }
+
+  function localZone() {
+    try { return new Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; }
+    catch (error) { return 'UTC'; }
+  }
+
+  function cityForZone(zone) {
+    var known = C.byZone(zone);
+    return { zone: zone, name: known ? known.name : P.zoneLabel(zone) };
+  }
+
+  function homeZone() {
+    return state.cities.length ? state.cities[0].zone : localZone();
+  }
+
+  function todayKey() {
+    return P.wallKey(homeZone(), Date.now());
+  }
+
+  function dayLabel(key) {
+    var parts = key.split('-');
+    var date = new Date(Date.UTC(+parts[0], +parts[1] - 1, +parts[2], 12, 0));
+    return new Intl.DateTimeFormat(LOCALE_TAG[state.lang] || 'en-GB', {
+      weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC'
+    }).format(date);
+  }
+
+  function shortDayLabel(key) {
+    var parts = key.split('-');
+    var date = new Date(Date.UTC(+parts[0], +parts[1] - 1, +parts[2], 12, 0));
+    return new Intl.DateTimeFormat(LOCALE_TAG[state.lang] || 'en-GB', {
+      weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC'
+    }).format(date);
+  }
+
+  /* ------------------------------------------------------------- language */
+
+  function detectLang() {
+    var saved = stored('lang');
+    if (saved && LOCALES[saved]) return saved;
+    var nav = (navigator.language || 'en').toLowerCase();
+    if (nav.indexOf('ro') === 0) return 'ro';
+    if (nav.indexOf('sr') === 0) return 'sr-latn';
+    return 'en';
+  }
+
+  function applyLang() {
+    var dict = LOCALES[state.lang] || LOCALES.en;
+    document.documentElement.lang = state.lang;
+
+    var nodes = document.querySelectorAll('[data-i18n]');
+    for (var i = 0; i < nodes.length; i += 1) {
+      var key = nodes[i].getAttribute('data-i18n');
+      if (dict[key]) nodes[i].textContent = dict[key];
+    }
+    var titled = document.querySelectorAll('[data-i18n-title]');
+    for (var j = 0; j < titled.length; j += 1) {
+      var tkey = titled[j].getAttribute('data-i18n-title');
+      if (dict[tkey]) titled[j].setAttribute('title', dict[tkey]);
+    }
+    var labelled = document.querySelectorAll('[data-i18n-aria-label]');
+    for (var k = 0; k < labelled.length; k += 1) {
+      var akey = labelled[k].getAttribute('data-i18n-aria-label');
+      if (dict[akey]) labelled[k].setAttribute('aria-label', dict[akey]);
+    }
+    var placed = document.querySelectorAll('[data-i18n-placeholder]');
+    for (var m = 0; m < placed.length; m += 1) {
+      var pkey = placed[m].getAttribute('data-i18n-placeholder');
+      if (dict[pkey]) placed[m].setAttribute('placeholder', dict[pkey]);
+    }
+
+    $('langSelect').value = state.lang;
+    $('workFrom').setAttribute('aria-label', t('workFrom'));
+    $('workTo').setAttribute('aria-label', t('workTo'));
+    $('grid').setAttribute('aria-label', t('gridAria'));
+    $('cityInput').setAttribute('placeholder', t('cityPlaceholder'));
+  }
+
+  /* ---------------------------------------------------------------- theme */
+
+  function applyTheme() {
+    document.documentElement.classList.toggle('theme-dark', state.theme === 'dark');
+  }
+
+  /* ----------------------------------------------------------------- data */
+
+  function pushUndo() {
+    undoStack.push(state.cities.map(function (city) { return { zone: city.zone, name: city.name }; }));
+    if (undoStack.length > 40) undoStack.shift();
+    $('undoBtn').disabled = false;
+  }
+
+  function save() {
+    store('cities', JSON.stringify(state.cities));
+    store('date', state.dateKey);
+    store('from', String(state.workStart));
+    store('to', String(state.workEnd));
+    store('theme', state.theme);
+    store('lang', state.lang);
+
+    var hash = '#' + P.encodeState({
+      cities: state.cities, dateKey: state.dateKey,
+      workStart: state.workStart, workEnd: state.workEnd
+    });
+    try { window.history.replaceState(null, '', hash); } catch (error) { /* file:// */ }
+  }
+
+  function restore() {
+    var fromHash = P.decodeState(window.location.hash);
+    if (fromHash && fromHash.cities && fromHash.cities.length) {
+      state.cities = fromHash.cities;
+      if (fromHash.dateKey) state.dateKey = fromHash.dateKey;
+      if (typeof fromHash.workStart === 'number' && fromHash.workStart >= 0) state.workStart = fromHash.workStart;
+      if (typeof fromHash.workEnd === 'number' && fromHash.workEnd >= 0) state.workEnd = fromHash.workEnd;
+      return;
+    }
+
+    var savedCities = null;
+    try { savedCities = JSON.parse(stored('cities') || 'null'); } catch (error) { savedCities = null; }
+    if (Array.isArray(savedCities) && savedCities.length) {
+      state.cities = savedCities.filter(function (city) {
+        return city && P.isValidZone(city.zone);
+      }).slice(0, MAX_CITIES);
+    }
+    if (!state.cities.length) {
+      state.cities = defaults();
+    }
+
+    var savedDate = stored('date');
+    if (savedDate && /^\d{4}-\d{2}-\d{2}$/.test(savedDate)) state.dateKey = savedDate;
+    var savedFrom = parseInt(stored('from'), 10);
+    var savedTo = parseInt(stored('to'), 10);
+    if (savedFrom >= 0 && savedFrom < 24) state.workStart = savedFrom;
+    if (savedTo >= 0 && savedTo < 24) state.workEnd = savedTo;
+  }
+
+  /* Three cities on first load, so the page explains itself before anyone
+   * touches it. The local zone always wins the first slot. */
+  function defaults() {
+    var home = cityForZone(localZone());
+    var used = {};
+    used[home.zone] = true;
+    var list = [home];
+    ['Europe/London', 'America/New_York', 'Asia/Tokyo'].forEach(function (zone) {
+      if (list.length >= 3 || used[zone] || !P.isValidZone(zone)) return;
+      used[zone] = true;
+      list.push(cityForZone(zone));
+    });
+    return list;
+  }
+
+  /* -------------------------------------------------------------- render */
+
+  function renderCities() {
+    var box = $('cityChips');
+    box.textContent = '';
+    state.cities.forEach(function (city, index) {
+      var chip = document.createElement('span');
+      chip.className = 'chip';
+
+      var name = document.createElement('span');
+      name.textContent = city.name;
+      chip.appendChild(name);
+
+      if (city.zone !== city.name) {
+        var zone = document.createElement('span');
+        zone.className = 'chip-zone';
+        zone.textContent = city.zone;
+        chip.appendChild(zone);
+      }
+
+      var remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'chip-x';
+      remove.setAttribute('data-index', String(index));
+      remove.setAttribute('aria-label', fill('removeCity', { city: city.name }));
+      remove.title = fill('removeCity', { city: city.name });
+      remove.textContent = '\u00d7';
+      chip.appendChild(remove);
+
+      box.appendChild(chip);
+    });
+
+    $('cityEmpty').hidden = state.cities.length > 0;
+    $('undoBtn').disabled = undoStack.length === 0;
+  }
+
+  function renderDate() {
+    $('dateLabel').textContent = dayLabel(state.dateKey);
+    $('todayBadge').hidden = state.dateKey !== todayKey();
+  }
+
+  function renderHours() {
+    function options(select, selected) {
+      select.textContent = '';
+      for (var hour = 0; hour < 24; hour += 1) {
+        var option = document.createElement('option');
+        option.value = String(hour);
+        option.textContent = P.hhmm(hour * 60);
+        if (hour === selected) option.selected = true;
+        select.appendChild(option);
+      }
+    }
+    options($('workFrom'), state.workStart);
+    options($('workTo'), state.workEnd);
+  }
+
+  function renderGrid() {
+    var head = $('gridHead');
+    var body = $('gridBody');
+    head.textContent = '';
+    body.textContent = '';
+
+    if (!state.cities.length) return;
+    $('grid').style.setProperty('--cols', String(state.cities.length));
+
+    var headRow = document.createElement('tr');
+    var corner = document.createElement('th');
+    corner.setAttribute('scope', 'col');
+    corner.textContent = t('gridCorner');
+    headRow.appendChild(corner);
+
+    state.cities.forEach(function (city) {
+      var th = document.createElement('th');
+      th.setAttribute('scope', 'col');
+      th.appendChild(document.createTextNode(city.name));
+      if (city.zone !== city.name) {
+        var zone = document.createElement('span');
+        zone.className = 'zone';
+        zone.textContent = city.zone;
+        th.appendChild(zone);
+      }
+      headRow.appendChild(th);
+    });
+    head.appendChild(headRow);
+
+    var home = homeZone();
+    var rows = P.rows(home, state.dateKey, Date.now());
+
+    rows.forEach(function (row) {
+      var tr = document.createElement('tr');
+      if (state.picked === row.index) tr.className = 'is-picked';
+      tr.setAttribute('data-row', String(row.index));
+
+      var th = document.createElement('th');
+      th.setAttribute('scope', 'row');
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'hourbtn';
+      button.setAttribute('data-row', String(row.index));
+      button.setAttribute('aria-pressed', state.picked === row.index ? 'true' : 'false');
+      button.textContent = row.label;
+      th.appendChild(button);
+      if (row.isNow) {
+        var dot = document.createElement('span');
+        dot.className = 'nowdot';
+        dot.setAttribute('aria-hidden', 'true');
+        th.appendChild(dot);
+      }
+      tr.appendChild(th);
+
+      state.cities.forEach(function (city) {
+        var td = document.createElement('td');
+        var cell = document.createElement('div');
+        var reading = P.reading(city.zone, row.at, home, state.dateKey);
+        cell.className = 'cell ' + P.classify(reading.minutes, state.workStart, state.workEnd);
+        cell.textContent = reading.label;
+        if (reading.dayOffset !== 0) {
+          var mark = document.createElement('span');
+          mark.className = 'daymark';
+          mark.textContent = (reading.dayOffset > 0 ? '+' : '') + reading.dayOffset;
+          cell.appendChild(mark);
+        }
+        td.appendChild(cell);
+        tr.appendChild(td);
+      });
+
+      body.appendChild(tr);
+    });
+  }
+
+  function renderResult() {
+    var box = $('result');
+    box.className = 'result';
+
+    if (state.cities.length < 2) {
+      box.hidden = state.cities.length === 0;
+      $('resultTitle').textContent = t('bestAllTitle');
+      $('resultBody').textContent = state.cities.length === 1
+        ? dayLabel(state.dateKey) + ' · ' + state.cities[0].name
+        : '';
+      return;
+    }
+    box.hidden = false;
+
+    var zones = state.cities.map(function (city) { return city.zone; });
+    var best = P.overlap(zones, {
+      dateKey: state.dateKey,
+      homeZone: homeZone(),
+      workStart: state.workStart,
+      workEnd: state.workEnd
+    });
+
+    if (best.kind === 'all') {
+      box.classList.add('is-all');
+      $('resultTitle').textContent = t('bestAllTitle');
+      $('resultBody').textContent = fill('bestAllBody', { start: best.startLabel, end: best.endLabel });
+    } else if (best.kind === 'partial') {
+      box.classList.add('is-partial');
+      $('resultTitle').textContent = t('bestPartialTitle');
+      $('resultBody').textContent = fill('bestPartialBody', { count: best.citiesInWork, total: zones.length }) +
+        ' ' + fill('bestAllBody', { start: best.startLabel, end: best.endLabel });
+    } else {
+      box.classList.add('is-none');
+      $('resultTitle').textContent = t('bestNoneTitle');
+      $('resultBody').textContent = t('bestNoneBody');
+    }
+  }
+
+  function renderPicked() {
+    var box = $('picked');
+    if (state.picked === null || !state.cities.length) {
+      box.hidden = true;
+      return;
+    }
+
+    var home = homeZone();
+    var rows = P.rows(home, state.dateKey, Date.now());
+    var row = rows[state.picked];
+    if (!row) { state.picked = null; box.hidden = true; return; }
+
+    box.hidden = false;
+    var list = $('pickedList');
+    list.textContent = '';
+
+    state.cities.forEach(function (city) {
+      var reading = P.reading(city.zone, row.at, home, state.dateKey);
+      var li = document.createElement('li');
+
+      var left = document.createElement('span');
+      left.className = 'city';
+      left.textContent = city.name;
+      var small = document.createElement('small');
+      small.textContent = reading.dayOffset > 0 ? '+' + reading.dayOffset + 'd'
+        : (reading.dayOffset < 0 ? reading.dayOffset + 'd' : '');
+      if (small.textContent) left.appendChild(small);
+
+      var right = document.createElement('span');
+      right.className = 'time' + (P.classify(reading.minutes, state.workStart, state.workEnd) === P.WORK ? ' is-work' : '');
+      right.textContent = reading.label;
+
+      li.appendChild(left);
+      li.appendChild(right);
+      list.appendChild(li);
+    });
+  }
+
+  function renderAll() {
+    applyLang();
+    applyTheme();
+    renderCities();
+    renderDate();
+    renderHours();
+    renderResult();
+    renderGrid();
+    renderPicked();
+    $('workFrom').value = String(state.workStart);
+    $('workTo').value = String(state.workEnd);
+  }
+
+  /* --------------------------------------------------------------- actions */
+
+  function select(hourIndex) {
+    state.picked = state.picked === hourIndex ? null : hourIndex;
+    renderGrid();
+    renderPicked();
+  }
+
+  function addCity(raw) {
+    var value = String(raw || '').trim();
+    if (!value) return;
+
+    var match = C.findByNameOrZone(value);
+    if (!match) {
+      var candidates = C.search(value, 1);
+      if (candidates.length && C.normalise(candidates[0].name).indexOf(C.normalise(value)) === 0) {
+        match = candidates[0];
+      }
+    }
+
+    var zone;
+    var name;
+    if (match) {
+      zone = match.zone;
+      name = match.name;
+    } else if (P.isValidZone(value)) {
+      zone = value;
+      name = P.zoneLabel(value);
+    } else {
+      message(fill('cityUnknown', { query: value }), false);
+      return;
+    }
+
+    for (var i = 0; i < state.cities.length; i += 1) {
+      if (state.cities[i].zone === zone) {
+        message(fill('cityDuplicate', { city: name }), false);
+        return;
+      }
+    }
+    if (state.cities.length >= MAX_CITIES) {
+      message(t('cityLimit'), false);
+      return;
+    }
+
+    pushUndo();
+    state.cities.push({ zone: zone, name: name });
+    state.picked = null;
+    message('', true);
+    save();
+    renderAll();
+    $('cityInput').value = '';
+  }
+
+  function removeCity(index) {
+    if (index < 0 || index >= state.cities.length) return;
+    pushUndo();
+    state.cities.splice(index, 1);
+    state.picked = null;
+    message('', true);
+    save();
+    renderAll();
+  }
+
+  function undo() {
+    if (!undoStack.length) return;
+    state.cities = undoStack.pop();
+    state.picked = null;
+    message('', true);
+    save();
+    renderAll();
+  }
+
+  function message(text, good) {
+    var box = $('cityMsg');
+    box.textContent = text;
+    box.className = 'msg' + (good ? ' good' : '');
+  }
+
+  function shiftDay(delta) {
+    state.dateKey = P.addDays(state.dateKey, delta);
+    state.picked = null;
+    save();
+    renderAll();
+  }
+
+  function copyText() {
+    if (state.picked === null) return '';
+    var home = homeZone();
+    var rows = P.rows(home, state.dateKey, Date.now());
+    var row = rows[state.picked];
+    if (!row) return '';
+
+    var first = state.cities[0];
+    var lines = [fill('shareHeader', {
+      day: shortDayLabel(state.dateKey),
+      time: row.label,
+      city: first ? first.name : P.zoneLabel(home)
+    })];
+
+    state.cities.forEach(function (city) {
+      var reading = P.reading(city.zone, row.at, home, state.dateKey);
+      lines.push(city.name + ': ' + reading.label);
+    });
+    return lines.join('\n');
+  }
+
+  function copyToClipboard() {
+    var text = copyText();
+    if (!text) return;
+
+    function done() {
+      var button = $('copyBtn');
+      button.textContent = t('copiedBtn');
+      window.setTimeout(function () { button.textContent = t('copyBtn'); }, 1600);
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(fallback);
+    } else {
+      fallback();
+    }
+
+    function fallback() {
+      var area = document.createElement('textarea');
+      area.value = text;
+      area.setAttribute('readonly', 'readonly');
+      area.style.position = 'fixed';
+      area.style.left = '-9999px';
+      document.body.appendChild(area);
+      area.select();
+      try { document.execCommand('copy'); } catch (error) { /* nothing else to try */ }
+      document.body.removeChild(area);
+      done();
+    }
+  }
+
+  /* ----------------------------------------------------------------- boot */
+
+  function boot() {
+    state.lang = detectLang();
+    state.theme = stored('theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+    restore();
+    if (!state.dateKey) state.dateKey = todayKey();
+    if (state.workEnd === state.workStart) state.workEnd = (state.workStart + 9) % 24;
+
+    var list = $('cityList');
+    C.list.forEach(function (city) {
+      var option = document.createElement('option');
+      option.value = city.name;
+      option.label = city.zone;
+      list.appendChild(option);
+    });
+
+    $('cityForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+      addCity($('cityInput').value);
+    });
+
+    $('cityChips').addEventListener('click', function (event) {
+      var button = event.target.closest('.chip-x');
+      if (!button) return;
+      removeCity(parseInt(button.getAttribute('data-index'), 10));
+    });
+
+    $('undoBtn').addEventListener('click', undo);
+    $('prevDayBtn').addEventListener('click', function () { shiftDay(-1); });
+    $('nextDayBtn').addEventListener('click', function () { shiftDay(1); });
+    $('todayBtn').addEventListener('click', function () {
+      state.dateKey = todayKey();
+      state.picked = null;
+      save();
+      renderAll();
+    });
+
+    $('workFrom').addEventListener('change', function () {
+      var value = parseInt(this.value, 10);
+      state.workStart = value;
+      if (state.workEnd === state.workStart) {
+        state.workEnd = (value + 9) % 24;
+        $('workTo').value = String(state.workEnd);
+      }
+      state.picked = null;
+      save();
+      renderAll();
+    });
+
+    $('workTo').addEventListener('change', function () {
+      var value = parseInt(this.value, 10);
+      state.workEnd = value;
+      if (state.workEnd === state.workStart) {
+        state.workStart = (value + 15) % 24;
+        $('workFrom').value = String(state.workStart);
+      }
+      state.picked = null;
+      save();
+      renderAll();
+    });
+
+    $('gridBody').addEventListener('click', function (event) {
+      var target = event.target.closest('[data-row]');
+      if (!target) return;
+      select(parseInt(target.getAttribute('data-row'), 10));
+    });
+
+    $('copyBtn').addEventListener('click', copyToClipboard);
+    $('clearBtn').addEventListener('click', function () {
+      state.picked = null;
+      renderGrid();
+      renderPicked();
+    });
+
+    $('themeBtn').addEventListener('click', function () {
+      state.theme = state.theme === 'dark' ? 'light' : 'dark';
+      applyTheme();
+      store('theme', state.theme);
+    });
+
+    $('langSelect').addEventListener('change', function () {
+      var value = this.value;
+      if (!LOCALES[value]) return;
+      state.lang = value;
+      store('lang', value);
+      renderAll();
+    });
+
+    renderAll();
+    save();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+
+  window.TD_APP = { state: state, copyText: copyText, addCity: addCity };
+}());
+</script>
+<!-- Meeting Planner 1 - single file build -->
+</body>
+</html>

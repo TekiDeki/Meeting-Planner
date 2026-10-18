@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#17616f">
+<title>Meeting Planner · the hour that works for everyone</title>
+<meta name="description" content="Add the cities, pick a day, and see when everyone is inside working hours. Daylight saving handled. No upload, no account, nothing leaves the browser.">
+<meta name="author" content="Kristian Mario Miskovic (TekiDeki)">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://tekideki.github.io/Meeting-Planner/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Meeting Planner">
+<meta property="og:title" content="Meeting Planner · the hour that works for everyone">
+<meta property="og:description" content="See at a glance when every city is inside working hours. Daylight saving handled, nothing uploaded.">
+<meta property="og:url" content="https://tekideki.github.io/Meeting-Planner/">
+<meta property="og:image" content="https://tekideki.github.io/Meeting-Planner/screenshots/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_GB">
+<meta property="og:locale:alternate" content="ro_RO">
+<meta property="og:locale:alternate" content="sr_RS">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Meeting Planner · the hour that works for everyone">
+<meta name="twitter:description" content="Add the cities and see when everybody is free. No upload, no account.">
+<meta name="twitter:image" content="https://tekideki.github.io/Meeting-Planner/screenshots/og.png">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="styles.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Meeting Planner","applicationCategory":"BusinessApplication","operatingSystem":"Any (web browser)","url":"https://tekideki.github.io/Meeting-Planner/","description":"A meeting planner across time zones that runs entirely in the browser. Shows which hour of the day works for every city in the list, with daylight saving handled by the browser's own time zone data.","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"author":{"@type":"Person","name":"Kristian Mario Miskovic","alternateName":"TekiDeki"},"license":"https://www.apache.org/licenses/LICENSE-2.0","isAccessibleForFree":true}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#main" data-i18n="skipToContent">Skip to content</a>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#main">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="11.5" fill="none" stroke="currentColor" stroke-width="2"/><ellipse cx="16" cy="16" rx="5.2" ry="11.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4.5 16h23" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M16 9.5V16l4.6 3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+      </span>
+      <span class="brand-text">
+        <span>Meeting Planner</span>
+        <span class="brand-tagline" data-i18n="tagline">Meetings across time zones, without the maths.</span>
+      </span>
+    </a>
+
+    <div class="topbar-actions">
+      <button type="button" class="icon-btn" id="undoBtn" disabled data-i18n-title="undoTip" title="Undo the last change to the city list">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg>
+        <span data-i18n="undo">Undo</span>
+      </button>
+      <button type="button" class="icon-btn" id="themeBtn" data-i18n-title="themeToggle" title="Switch light or dark theme">
+        <svg class="theme-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.8 6.8 0 0 0 9.8 9.8Z"/></svg>
+        <svg class="theme-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg>
+        <span data-i18n="theme">Theme</span>
+      </button>
+      <label class="sr-only" for="langSelect" data-i18n="language">Language</label>
+      <select id="langSelect" aria-label="Language" data-i18n-aria-label="language">
+        <option value="en">English</option>
+        <option value="ro">Română</option>
+        <option value="sr-latn">Srpski</option>
+        <option value="sr-cyrl">Српски</option>
+      </select>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+
+  <section class="intro">
+    <h1 data-i18n="h1">Find the hour that works for everyone</h1>
+    <p class="lede" data-i18n="lede">Add the cities and see at a glance when everybody is inside working hours. Every offset is computed here, in this tab, with your browser's own time zone data.</p>
+    <ul class="claims">
+      <li data-i18n="claimNoUpload">No upload</li>
+      <li data-i18n="claimNoAccount">No account</li>
+      <li data-i18n="claimOffline">Works offline</li>
+      <li data-i18n="claimDst">Daylight saving included</li>
+    </ul>
+  </section>
+
+  <section class="panels" aria-label="Controls">
+
+    <div class="panel">
+      <h2 id="citiesHead" data-i18n="citiesTitle">Your cities</h2>
+      <p class="panel-sub" data-i18n="citiesSub">The first city sets the clock for the whole table.</p>
+      <div class="chips" id="cityChips"></div>
+      <p class="empty" id="cityEmpty" data-i18n="cityEmpty" hidden>No cities yet. Add one to start.</p>
+      <form class="addrow" id="cityForm" autocomplete="off">
+        <label class="sr-only" for="cityInput" data-i18n="cityInputLabel">City or time zone</label>
+        <input type="text" id="cityInput" list="cityList" spellcheck="false"
+               placeholder="Type a city, or a zone like Europe/Belgrade"
+               data-i18n-placeholder="cityPlaceholder" aria-describedby="cityMsg">
+        <datalist id="cityList"></datalist>
+        <button type="submit" class="btn btn-primary" data-i18n="addCity">Add</button>
+      </form>
+      <p class="msg" id="cityMsg" role="status" aria-live="polite"></p>
+    </div>
+
+    <div class="panel">
+      <h2 id="whenHead" data-i18n="whenTitle">When</h2>
+      <p class="panel-sub" data-i18n="whenSub">A day in the first city. Every other column follows it.</p>
+
+      <div class="dayrow">
+        <button type="button" class="round-btn" id="prevDayBtn" data-i18n-aria-label="prevDay" data-i18n-title="prevDay" aria-label="Previous day" title="Previous day">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+        </button>
+        <div class="daylabel">
+          <strong id="dateLabel">-</strong>
+          <span class="badge" id="todayBadge" data-i18n="todayBadge" hidden>Today</span>
+        </div>
+        <button type="button" class="round-btn" id="nextDayBtn" data-i18n-aria-label="nextDay" data-i18n-title="nextDay" aria-label="Next day" title="Next day">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+        <button type="button" class="btn btn-quiet" id="todayBtn" data-i18n="backToday">Today</button>
+      </div>
+
+      <div class="hours">
+        <span class="hours-label" data-i18n="workHours">Working hours</span>
+        <label class="sr-only" for="workFrom" data-i18n="workFrom">From</label>
+        <select id="workFrom" aria-label="Working hours start" data-i18n-aria-label="workFrom"></select>
+        <span class="dash" aria-hidden="true">-</span>
+        <label class="sr-only" for="workTo" data-i18n="workTo">To</label>
+        <select id="workTo" aria-label="Working hours end" data-i18n-aria-label="workTo"></select>
+      </div>
+      <p class="tiny" data-i18n="workNote">Used for the colours and for the suggestion.</p>
+    </div>
+  </section>
+
+  <section class="result" id="result" aria-live="polite">
+    <h2 id="resultTitle">-</h2>
+    <p id="resultBody">-</p>
+  </section>
+
+  <section class="gridcard">
+    <div class="grid-scroll">
+      <table class="grid" id="grid" aria-label="Hours against cities" data-i18n-aria-label="gridAria">
+        <thead id="gridHead"></thead>
+        <tbody id="gridBody"></tbody>
+      </table>
+    </div>
+    <div class="legend">
+      <span class="key key-work"><i aria-hidden="true"></i><span data-i18n="legendWork">Working</span></span>
+      <span class="key key-awake"><i aria-hidden="true"></i><span data-i18n="legendAwake">Awake</span></span>
+      <span class="key key-night"><i aria-hidden="true"></i><span data-i18n="legendNight">Night</span></span>
+      <span class="key key-now"><i aria-hidden="true"></i><span data-i18n="legendNow">Now</span></span>
+    </div>
+    <p class="hint" id="pickHint" data-i18n="pickHint">Pick a row to read that hour in every city.</p>
+  </section>
+
+  <section class="picked" id="picked" hidden>
+    <div class="picked-head">
+      <h2 data-i18n="pickedTitle">At this hour</h2>
+      <div class="picked-actions">
+        <button type="button" class="btn btn-primary btn-sm" id="copyBtn" data-i18n="copyBtn">Copy</button>
+        <button type="button" class="btn btn-quiet btn-sm" id="clearBtn" data-i18n="clearPick">Clear</button>
+      </div>
+    </div>
+    <ul class="picked-list" id="pickedList"></ul>
+  </section>
+
+  <section class="how">
+    <h2 data-i18n="howTitle">How it works</h2>
+    <p data-i18n="howP1">Offsets come from the browser, not from a table printed into the page.</p>
+    <p data-i18n="howP2">Nothing is sent anywhere.</p>
+    <p data-i18n="howP3">Two cities in the same time zone show the same hour.</p>
+  </section>
+</main>
+
+<footer class="foot">
+  <p><span>Meeting Planner</span> · <span data-i18n="footPrivacy">No upload, no account, no tracking.</span> · <span data-i18n="footLicence">Apache-2.0</span></p>
+  <p class="foot-links"><a href="https://freehtml.dev/">freehtml.dev</a> · <a href="https://github.com/TekiDeki/Meeting-Planner">source</a> · <a href="https://paypal.me/TekiDeki">paypal.me/TekiDeki</a></p>
+</footer>
+
+<script src="planner.js"></script>
+<script src="cities.js"></script>
+<script src="i18n/locales.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
