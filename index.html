@@ -414,6 +414,14 @@ tr.is-now th::after { content: ""; }
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+
+
+
+  /* regula casei: tinte de atingere pe mobil */
+  @media (pointer: coarse), (max-width: 700px) {
+    .chip-x { min-height: 34px; display: inline-flex; align-items: center; }
+    a { padding-block: 9px; }
+  }
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebApplication","name":"Meeting Planner","applicationCategory":"BusinessApplication","operatingSystem":"Any (web browser)","url":"https://tekideki.github.io/Meeting-Planner/","description":"A meeting planner across time zones that runs entirely in the browser. Shows which hour of the day works for every city in the list, with daylight saving handled by the browser's own time zone data.","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"author":{"@type":"Person","name":"Kristian Mario Miskovic","alternateName":"TekiDeki"},"license":"https://www.apache.org/licenses/LICENSE-2.0","isAccessibleForFree":true}
