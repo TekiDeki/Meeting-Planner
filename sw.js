@@ -5,7 +5,7 @@
  * Nothing in the app talks to the network, so this worker only keeps the
  * shell. Bump VERSION whenever index.html changes.
  */
-var VERSION = '1';
+var VERSION = '2';
 var CACHE = 'meeting-planner-v' + VERSION;
 var ASSETS = [
   './',
