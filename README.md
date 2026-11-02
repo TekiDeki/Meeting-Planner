@@ -69,8 +69,10 @@ Two details that matter in practice:
 | `src/i18n/locales.json` | English, Romanian and Serbian Latin. Cyrillic is generated. |
 | `src/template.html` | The page shell, with `data-i18n` keys instead of hardcoded text. |
 | `src/styles.css` | All styling. Light and dark, no external font. |
+| `src/install.html` | The shared, honest install dialog and its browser-specific fallback. |
 | `build.py` | Inlines everything into one `index.html`. Deterministic. |
 | `index.html` | The built page. Committed, so GitHub Pages serves it directly. |
+| `tests/build_test.py` | Fails if the sources no longer reproduce the committed page byte for byte. |
 | `tests/logic_test.cjs` | Engine and city list tests, no browser. |
 | `tests/ui_test.py` | Playwright on desktop and touch tablet. |
 | `tools/make_icons.py` | Draws every icon, so no binary source is committed. |
@@ -81,8 +83,9 @@ Two details that matter in practice:
 
 ```bash
 python3 build.py                 # writes index.html
-node tests/logic_test.cjs        # 79 checks, no browser
-python3 tests/ui_test.py         # 58 checks, desktop and tablet
+python3 tests/build_test.py      # sources must reproduce the committed page exactly
+node tests/logic_test.cjs        # 86 checks, no browser
+python3 tests/ui_test.py         # 60 checks, desktop, tablet and quarter-hour UI
 python3 tools/make_icons.py      # only when the icon changes
 python3 tools/make_screenshots.py
 ```

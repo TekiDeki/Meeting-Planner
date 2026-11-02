@@ -839,15 +839,15 @@ tr.is-now th::after { content: ""; }
 
   /* Best window where every city is inside working hours.
    *
-   * Searched at half hour steps because a five and a half hour offset would
-   * otherwise be rounded into a false overlap. */
+   * Searched at quarter hour steps: a 30 minute grid can add 15 minutes past
+   * Kathmandu's closing time or lose the first valid 15 minutes in Chatham. */
   function overlap(zones, options) {
     var opts = options || {};
     var homeKey = opts.dateKey;
     var homeZone = opts.homeZone;
     var workStart = typeof opts.workStart === 'number' ? opts.workStart : 9;
     var workEnd = typeof opts.workEnd === 'number' ? opts.workEnd : 18;
-    var step = opts.step || 30;
+    var step = opts.step || 15;
 
     var start = dayStartUtc(homeZone, homeKey);
     var slots = [];

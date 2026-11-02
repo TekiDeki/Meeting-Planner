@@ -237,6 +237,16 @@ def desktop_suite(browser, url):
     check(page.evaluate("document.documentElement.classList.contains('theme-dark')"),
           "the theme survives a reload")
 
+    # The deployed interface must use the exact quarter-hour engine too.
+    quarter = ('#z=Europe%2FBelgrade~Belgrade,Europe%2FLondon~London,'
+               'Asia%2FKathmandu~Kathmandu&d=2026-11-10&s=9&e=18')
+    page.goto(url + quarter, wait_until="load")
+    page.reload(wait_until="load")  # a hash-only goto is same-document navigation
+    page.wait_for_selector("#gridBody tr")
+    check(chips(page) == 3, "the shared quarter-hour scenario restores three cities")
+    check(text_of(page, "#resultBody") == "10:00 to 13:15, your time.",
+          "the interface does not extend Kathmandu past 18:00")
+
     watcher.quiet("desktop suite")
     context.close()
 

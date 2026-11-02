@@ -125,6 +125,25 @@ eq(india.rows[1].start, '12:30', 'Kolkata starts at 12:30');
 eq(india.rows[1].end, '18:00', 'Kolkata ends at 18:00');
 eq(india.minutes, 330, 'five and a half hours, not six');
 
+/* Quarter hour zones need exact boundaries too. On 10 November Kathmandu is
+ * UTC+5:45, so the common window closes at 13:15 Belgrade, not 13:30. */
+const nepal = P.overlap([belgrade, 'Europe/London', 'Asia/Kathmandu'], {
+  dateKey: '2026-11-10', homeZone: belgrade, workStart: 9, workEnd: 18
+});
+eq(nepal.kind, 'all', 'Belgrade, London and Kathmandu have a real overlap');
+eq(nepal.startLabel, '10:00', 'the Kathmandu window starts at 10:00 Belgrade');
+eq(nepal.endLabel, '13:15', 'the Kathmandu window ends at 13:15, not 13:30');
+eq(nepal.minutes, 195, 'the Kathmandu overlap is exactly 195 minutes');
+eq(nepal.rows[2].end, '18:00', 'the exclusive end is exactly 18:00 in Kathmandu');
+
+/* In January Chatham is 45 minutes ahead of Auckland. A 30 minute search
+ * starts at 10:00 and silently loses the first valid quarter hour. */
+const chatham = P.overlap(['Pacific/Chatham', 'Pacific/Auckland'], {
+  dateKey: '2026-01-15', homeZone: 'Pacific/Chatham', workStart: 9, workEnd: 18
+});
+eq(chatham.kind, 'all', 'Chatham and Auckland overlap in January');
+eq(chatham.startLabel, '09:45', 'the first valid Chatham quarter hour is kept');
+
 /* One city is its own overlap, all day. */
 const single = P.overlap([belgrade], {
   dateKey: '2026-10-19', homeZone: belgrade, workStart: 9, workEnd: 18
