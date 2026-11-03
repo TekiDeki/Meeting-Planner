@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-version="1">
+<html lang="en" data-version="2">
 <head>
 <meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' blob: data:; connect-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; upgrade-insecure-requests">
@@ -215,6 +215,7 @@ select {
   width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center;
   font-size: 15px; line-height: 1; padding: 0;
 }
+.theme-dark .chip-x { color: var(--ink-soft); }
 .chip-x:hover { background: var(--bad-soft); color: var(--bad); }
 
 .empty { margin-top: 14px; font-size: 13px; color: var(--ink-muted); }
@@ -1914,7 +1915,7 @@ if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) {
   });
 }
 </script>
-<!-- Meeting Planner 1 - single file build -->
+<!-- Meeting Planner 2 - single file build -->
 <!-- Buton de instalare TekiDeki (Apache-2.0). Sursa: studio/unelte/install-app/ - acelasi bloc în toate uneltele. -->
 <style>
 /* App-scoped install controls. Uses each app's existing theme; no external assets. */

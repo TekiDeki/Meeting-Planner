@@ -181,6 +181,7 @@ select {
   width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center;
   font-size: 15px; line-height: 1; padding: 0;
 }
+.theme-dark .chip-x { color: var(--ink-soft); }
 .chip-x:hover { background: var(--bad-soft); color: var(--bad); }
 
 .empty { margin-top: 14px; font-size: 13px; color: var(--ink-muted); }
